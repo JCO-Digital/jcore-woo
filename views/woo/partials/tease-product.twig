@@ -1,0 +1,69 @@
+<article id="tease-{{ post.ID }}" class="{{ post.class }} {% if columns %}columns-{{ columns }}{% endif %}">
+
+    {# get product post data #}
+    {{ fn('jcore\\woo\\timber_set_product', post) }}
+
+    <div class="product-tease">
+
+        <div class="product-tease-content">
+
+            {#
+            /**
+	        * Hook: woocommerce_before_shop_loop_item_title.
+	        *
+	        * @hooked woocommerce_show_product_loop_sale_flash - 10
+	        * @hooked woocommerce_template_loop_product_thumbnail - 10
+	        */
+            #}
+
+            <a href="{{ post.link }}">
+                {% if post.thumbnail %}
+                    <div class="perfect-square {% if customizer('article_highlight','postcard') %} wide {% endif %} {{ columns == "two" ? ' wide' }}">
+                        {% include 'images/image.twig' with {image: post.thumbnail} %}
+                    </div>
+                {% else %}
+                    <div class="perfect-square {% if customizer('article_highlight','postcard') %} wide {% endif %} {{ columns == "two" ? ' wide' }}">
+                        <img src="{{ fn('wc_placeholder_img_src') }}" alt="Placeholder image" />
+                    </div>
+                {% endif %}
+                {% do action('woocommerce_before_shop_loop_item_title') %}
+
+                {% block title %}
+                    {% if post.title %}
+                        <h3 class="entry-title">{{ post.title }}</h3>
+                    {% else %}
+                        <h3 class="entry-title">{{ fn('the_title') }}</h3>
+                    {% endif %}
+                {% endblock %}
+            </a>
+            {% block woodata %}
+                <div class="woodata">
+                    {#
+                    /**
+                    * Hook: woocommerce_after_shop_loop_item_title.
+                    *
+                    * @hooked woocommerce_template_loop_rating - 5
+                    * @hooked woocommerce_template_loop_price - 10
+                    */
+                    #}
+                    {% do action( 'woocommerce_after_shop_loop_item_title' ) %}
+
+                    {#
+                    /**
+                    * Hook: woocommerce_after_shop_loop_item.
+                    *
+                    * @hooked woocommerce_template_loop_product_link_close - 5
+                    * @hooked woocommerce_template_loop_add_to_cart - 10
+                    */
+                    #}
+                    {% do action( 'woocommerce_after_shop_loop_item' ) %}
+                </div>
+            {% endblock %}
+        </div>
+
+    </div>
+
+    {# reset post data #}
+    {{ fn('wp_reset_postdata') }}
+
+</article>

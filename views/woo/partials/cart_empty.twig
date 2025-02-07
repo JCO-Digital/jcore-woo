@@ -1,0 +1,7 @@
+{% if function('wc_get_page_id', 'shop') > 0 %}
+    <p class="return-to-shop">
+        <a class="button wc-backward {{ fn('wc_wp_theme_get_element_class_name', 'button') ? fn('wc_wp_theme_get_element_class_name', 'button')|e('html_attr') : '' }}" href="{{ function('wc_get_page_permalink', 'shop' )|apply_filters( 'woocommerce_return_to_shop_redirect' )|e('esc_url') }}">
+            {{ __('Return to shop', 'woocommerce')|apply_filters('woocommerce_return_to_shop_text')|e('esc_html') }}
+        </a>
+    </p>
+{% endif %}

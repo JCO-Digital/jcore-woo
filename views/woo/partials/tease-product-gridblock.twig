@@ -1,0 +1,25 @@
+{% extends 'woo/partials/tease-product.twig' %}
+
+{% block title %}
+    {% if grid.title %}
+        {% if post.title %}
+            <h3 class="entry-title">{{ post.title }}</h3>
+        {% else %}
+            <h3 class="entry-title">{{ fn('the_title') }}</h3>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block woodata %}
+    <div class="woodata">
+        {% if grid.rating %}
+            {% include 'woo/loop/rating.twig' %}
+        {% endif %}
+        {% if grid.price %}
+            {% include 'woo/loop/price.twig' %}
+        {% endif %}
+        {% if grid.button %}
+            {{ grid.button }}
+        {% endif %}
+    </div>
+{% endblock %}

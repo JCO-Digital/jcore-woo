@@ -1,0 +1,57 @@
+{% block before_checkout_payment_wrapper %}
+{% endblock %}
+
+<div id="payment" class="woocommerce-checkout-payment">
+    {% block before_checkout_payment %}
+    {% endblock %}
+
+    {% if needs_payment %}
+
+        {% block checkout_payment_payment_method %}
+
+            <ul class="wc_payment_methods payment_methods methods">
+                {% if available_gateways is not empty %}
+                    {% for gateway in available_gateways %}
+                        {% include "woo/checkout/payment-method.twig" with {gateway: gateway} %}
+                    {% endfor %}
+                {% else %}
+                    {% block checkout_payment_method_no_payment_method %}
+                        <li>{{ no_available_gateways_notice }}</li>
+                    {% endblock %}
+                {% endif %}
+            </ul>
+
+        {% endblock %}
+
+    {% endif %}
+
+    {% block checkout_payment_place_order %}
+        <div class="form-row place-order">
+            <noscript>
+                {# translators: $1 and $2 opening and closing emphasis tags respectively #}
+                {{ __( 'Since your browser does not support JavaScript, or it is disabled, please ensure you click the %1$sUpdate Totals%2$s button before placing your order. You may be charged more than the amount stated above if you fail to do so.', 'woocommerce' )|format('<em>', '</em>') }}
+                <br/>
+                <button type="submit" class="button alt {{ fn('wc_wp_theme_get_element_class_name', 'button') ? fn('wc_wp_theme_get_element_class_name', 'button')|e('html_attr') : '' }}" name="woocommerce_checkout_update_totals"
+                        value="{{ __('Update totals', 'woocommerce')|e('html_attr') }}">{{ __('Update totals', 'woocommerce')|e('esc_html') }}</button>
+            </noscript>
+
+            {{ fn( 'wc_get_template', 'checkout/terms.php' ) }}
+
+            {% do action( 'woocommerce_review_order_before_submit' ) %}
+
+            {% block checkout_payment_checkout_button %}
+                {{ '<button type="submit" class="button alt ' ~ theme_button_class ~ '" name="woocommerce_checkout_place_order" id="place_order" value="' ~ order_button_text|e('html_attr') ~ '" data-value="' ~ order_button_text|e('html_attr') ~ '">' ~ order_button_text|e('esc_html') ~ '</button>'|apply_filters( 'woocommerce_order_button_html' )|raw }}
+            {% endblock %}
+
+            {% do action( 'woocommerce_review_order_after_submit' ) %}
+
+            {{ fn( 'wp_nonce_field', 'woocommerce-process_checkout', 'woocommerce-process-checkout-nonce' ) }}
+        </div>
+    {% endblock %}
+
+    {% block after_checkout_payment %}
+    {% endblock %}
+</div>
+
+{% block after_checkout_payment_wrapper %}
+{% endblock %}

@@ -1,0 +1,66 @@
+{% set show_shipping = not fn('wc_ship_to_billing_address_only') and order.needs_shipping_address() %}
+
+{% block above_order_customer_details_wrapper %}
+{% endblock %}
+
+<section class="woocommerce-customer-details">
+
+    {% block above_order_customer_details %}
+    {% endblock %}
+
+    {% if show_shipping %}
+
+    <section class="woocommerce-columns woocommerce-columns--2 woocommerce-columns--addresses col2-set addresses">
+        <div class="woocommerce-column woocommerce-column--1 woocommerce-column--billing-address col-1">
+
+            {% endif %}
+            {% block order_customer_billing_title %}
+                <h2 class="woocommerce-column__title">{{ __('Billing address', 'woocommerce')|e('esc_html') }}</h2>
+            {% endblock %}
+
+            {% block order_customer_billing_address %}
+                <address>
+                    {{ order.get_formatted_billing_address( __( 'N/A', 'woocommerce' )|e('esc_html') )|e('wp_kses_post') }}
+
+                    {% if order.get_billing_phone() %}
+                        <p class="woocommerce-customer-details--phone">{{ order.get_billing_phone()|e('esc_html') }}</p>
+                    {% endif %}
+
+                    {% if order.get_billing_email() %}
+                        <p class="woocommerce-customer-details--email">{{ order.get_billing_email()|e('esc_html') }}</p>
+                    {% endif %}
+                </address>
+            {% endblock %}
+
+            {% if show_shipping %}
+        </div><!-- /.col-1 -->
+
+        <div class="woocommerce-column woocommerce-column--2 woocommerce-column--shipping-address col-2">
+
+            {% block order_customer_shipping_title %}
+                <h2 class="woocommerce-column__title">{{ __('Shipping address', 'woocommerce')|e('esc_html') }}</h2>
+            {% endblock %}
+
+            {% block order_customer_shipping_address %}
+                <address>
+                    {{ order.get_formatted_shipping_address( __( 'N/A', 'woocommerce' )|e('esc_html') )|e('wp_kses_post') }}
+
+                    {% if order.get_shipping_phone() %}
+                        <p class="woocommerce-customer-details--phone"> {{ order.get_shipping_phone()|e('esc_html') }}</p>
+                    {% endif %}
+                </address>
+            {% endblock %}
+        </div><!-- /.col-2 -->
+
+    </section><!-- /.col2-set -->
+    {% endif %}
+
+    {% block below_order_customer_details %}
+        {% do action( 'woocommerce_order_details_after_customer_details', order ) %}
+    {% endblock %}
+
+</section>
+
+{% block below_order_customer_details_wrapper %}
+{% endblock %}
+

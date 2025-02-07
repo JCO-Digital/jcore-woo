@@ -1,0 +1,14 @@
+{% apply apply_filters( 'woocommerce_loop_add_to_cart_link', product, args ) %}
+    <a href="{{ product.add_to_cart_url()|e('esc_url') }}"
+       {{ aria_describedby }}
+       data-quantity="{{ args.quantity ? args.quantity : 1|e('html_attr') }}"
+       class="{{ args.class ? args.class : 'button'|e('html_attr') }}"
+        {{ args.attributes ? fn('wc_implode_html_attributes', args.attributes) : '' }}>{{ product.add_to_cart_text|e('esc_html') }}
+    </a>
+{% endapply %}
+
+{% if aria_describedby %}
+    <span id="woocommerce_loop_add_to_cart_link_describedby_{{ product.get_id|e('html_attr') }}" class="screen-reader-text">
+		{{ args['aria-describedby_text']|e('esc_html') }}
+	</span>
+{% endif %}

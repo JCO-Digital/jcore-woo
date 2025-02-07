@@ -1,0 +1,89 @@
+<form class="woocommerce-cart-form" action="{{ function('wc_get_cart_url')|e('esc_url') }}" method="post">
+
+    {% do action ('woocommerce_before_cart_table') %}
+
+    <table class="shop_table shop_table_responsive cart woocommerce-cart-form__contents" cellspacing="0">
+        <thead>
+        <tr>
+            <th class="product-remove"><span class="screen-reader-text">{{ __('Remove item', 'woocommerce')|e('esc_html') }}</span></th>
+            <th class="product-thumbnail"><span class="screen-reader-text">{{ __('Thumbnail image', 'woocommerce')|e('esc_html') }}</span></th>
+            <th class="product-name">{{ __('Product', 'woocommerce')|e('esc_html') }}</th>
+            <th class="product-price">{{ __('Price', 'woocommerce')|e('esc_html') }}</th>
+            <th class="product-quantity">{{ __('Quantity', 'woocommerce')|e('esc_html') }}</th>
+            <th class="product-subtotal">{{ __('Subtotal', 'woocommerce')|e('esc_html') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% do action( 'woocommerce_before_cart_contents' ) %}
+        {% for product in cart_products %}
+            <tr class="woocommerce-cart-form__cart-item {{ product.cart_item_class }}">
+                <td class="product-remove">
+                    {{ product.product_remove }}
+                </td>
+                <td class="product-thumbnail">
+                    {% if not product.link %}
+                        {{ product.thumbnail }}
+                    {% else %}
+                        <a href="{{ product.link }}">{{ product.thumbnail }}</a>
+                    {% endif %}
+                </td>
+                <td class="product-name" data-title="{{ __('Product', 'woocommerce')|e('html_attr') }}">
+                    {{ product.name }}
+
+                    {% do action( 'woocommerce_after_cart_item_name', product.cart_item, product.cart_item_key ) %}
+
+                    {{ product.meta_data }}
+
+                    {{ product.backorder_notification }}
+                </td>
+                <td class="product-price" data-title="{{ __('Price', 'woocommerce')|e('html_attr') }}">
+                    {{ product.price }}
+                </td>
+                <td class="product-quantity" data-title="{{ __('Quantity', 'woocommerce')|e('html_attr') }}">
+                    {{ product.quantity }}
+                </td>
+                <td class="product-subtotal" data-title="{{ __('Subtotal', 'woocommerce')|e('html_attr') }}">
+                    {{ product.subtotal }}
+                </td>
+            </tr>
+        {% endfor %}
+        {% do action ( 'woocommerce_cart_contents' ) %}
+        <tr>
+            <td colspan="6" class="actions">
+                {% if function('wc_coupons_enabled') %}
+                    <div class="coupon">
+                        <label for="coupon_code" class="screen-reader-text">{{ __('Coupon:', 'woocommerce')|e('esc_html') }}</label>
+                        <input type="text" name="coupon_code" class="input-text" id="coupon_code" value=""
+                               placeholder="{{ __('Coupon code', 'woocommerce')|e('html_attr') }}">
+                        <button type="submit" class="button {{ fn('wc_wp_theme_get_element_class_name', 'button') ? fn('wc_wp_theme_get_element_class_name', 'button')|e('html_attr') : '' }}" name="apply_coupon"
+                                value="{{ __('Apply coupon', 'woocommerce')|e('html_attr') }}>">{{ __('Apply coupon', 'woocommerce')|e('esc_html') }}</button>
+                        {% do action('woocommerce_cart_coupon') %}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="button {{ fn('wc_wp_theme_get_element_class_name', 'button') ? fn('wc_wp_theme_get_element_class_name', 'button')|e('html_attr') : '' }}" name="update_cart"
+                        value="{{ __('Update cart', 'woocommerce')|e('html_attr') }}">{{ __('Update cart', 'woocommerce')|e('esc_html') }}</button>
+
+                {% do action('woocommerce_cart_actions') %}
+
+                {{ function('wp_nonce_field', 'woocommerce-cart', 'woocommerce-cart-nonce') }}
+            </td>
+        </tr>
+        {% do action( 'woocommerce_after_cart_contents' ) %}
+        </tbody>
+    </table>
+    {% do action(' woocommerce_after_cart_table ') %}
+</form>
+
+{% do action( 'woocommerce_before_cart_collaterals' ) %}
+
+<div class="cart-collaterals">
+    {#
+    Cart collaterals hook.
+
+    @hooked woocommerce_cross_sell_display
+    @hooked woocommerce_cart_totals - 10
+    #}
+    {% do action( 'woocommerce_cart_collaterals', 2, 2, 'rand', 'desc' ) %}
+</div>
+

@@ -1,0 +1,48 @@
+{% if true|apply_filters('woocommerce_order_item_visible', item) %}
+    {% block order_details_item %}
+        <tr class="{{ "woocommerce-table__line-item order_item"|apply_filters( 'woocommerce_order_item_class', item, order )|e('html_attr') }}">
+            {% block order_details_item_name %}
+                <td class="woocommerce-table__product-name product-name">
+                    {% set is_visible = product and product.is_visible %}
+                    {% set product_permalink = is_visible ? product.get_permalink( item ) : ''|apply_filters( 'woocommerce_order_item_permalink', item, order ) %}
+
+                    {{ product_permalink ? '<a href="' ~ product_permalink ~ '">' ~ item.get_name() ~ '</a>' : item.get_name()|apply_filters( 'woocommerce_order_item_name', item, is_visible )|e('wp_kses_post') }}
+
+                    {% set qty = item.get_quantity() %}
+                    {% set refunded_qty = order.get_qty_refunded_for_item( item_id ) %}
+
+                    {% if refunded_qty %}
+                        {{ '<strong class="product-quantity">&times;&nbsp;<del>'~ qty|e('esc_html') ~'</del> <ins>' ~ (qty - (refunded_qty * -1))|e('esc_html') ~ '</ins></strong>'|apply_filters('woocommerce_order_item_quantity_html', item)|raw }}
+                    {% else %}
+                        {{ qty|e('esc_html')|apply_filters('woocommerce_order_item_quantity_html', item) }}
+                    {% endif %}
+
+                    {% do action( 'woocommerce_order_item_meta_start', item_id, item, order, false ) %}
+
+                    {{ fn('wc_display_item_meta', item ) }}
+
+                    {% do action( 'woocommerce_order_item_meta_end', item_id, item, order, false ) %}
+                </td>
+            {% endblock %}
+
+            {% block order_details_item_total %}
+                <td class="woocommerce-table__product-total product-total">
+                    {{ order.get_formatted_line_subtotal( item ) }}
+                </td>
+            {% endblock %}
+
+        </tr>
+    {% endblock %}
+
+    {% if show_purchase_note and purchase_note %}
+        {% block order_details_item_purchase_note %}
+            <tr class="woocommerce-table__product-purchase-note product-purchase-note">
+                <td colspan="2">{{ purchase_note|shortcodes|e('wp_kses_post')|wpautop }}</td>
+            </tr>
+        {% endblock %}
+    {% endif %}
+{% endif %}
+
+
+
+

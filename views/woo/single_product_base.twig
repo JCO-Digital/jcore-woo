@@ -1,0 +1,89 @@
+{% extends "layout.twig" %}
+{% block content_area %}
+    {% block content_above %}
+        <div class="breadcrumb-container">
+            {{ yoast_breadcrumbs }}
+        </div>
+    {% endblock %}
+    <main id="main" class="content-container{% if customizer('article','group_padding') %} group-padding{% endif %}">
+        {% block content %}
+            {#
+            * Hook: woocommerce_before_single_product.
+            *
+            * @hooked woocommerce_output_all_notices - 10
+            #}
+            {% do action('woocommerce_before_single_product') %}
+
+            <div id="product-{{ post.id }}" class="single-product-details {{ post.class }}">
+
+                <div class="top-row">
+                    {#
+                    * Hook: woocommerce_before_single_product_summary.
+                    *
+                    * @hooked woocommerce_show_product_sale_flash - 10
+                    * @hooked woocommerce_show_product_images - 20
+                    #}
+                    {% do action('woocommerce_before_single_product_summary') %}
+
+                    <div class="summary entry-summary">
+                        {#
+                        * Hook: woocommerce_single_product_summary.
+                        *
+                        * @hooked woocommerce_template_single_title - 5
+                        * @hooked woocommerce_template_single_rating - 10
+                        * @hooked woocommerce_template_single_price - 10
+                        * @hooked woocommerce_template_single_excerpt - 20
+                        * @hooked woocommerce_template_single_add_to_cart - 30
+                        * @hooked woocommerce_template_single_meta - 40
+                        * @hooked woocommerce_template_single_sharing - 50
+                        * @hooked WC_Structured_Data::generate_product_data() - 60
+                        #}
+                        {% do action('woocommerce_single_product_summary') %}
+                    </div>
+                </div>
+
+                {# * Hook: woocommerce_after_single_product_summary.
+        *
+        * @hooked woocommerce_output_product_data_tabs - 10
+                #}
+                {% do action('woocommerce_after_single_product_summary') %}
+            </div>
+        {% endblock  %} {# End block content  #}
+    </main>
+    {% block content_below %}
+        {# Stuff below content goes here #}
+    {% endblock %}
+    {% block content_footer %}
+        {# Show upsell products #}
+        {% block upsell_products %}
+            {% if upsell_products %}
+                <div class="up-sells {{ customizer('article_highlight','highlight_on_single') ? ' has-'~customizer('article_highlight','background_color')~'-background-color' }}">
+                    <div class="up-sells-container">
+                        <h2>{{ __( 'You may also like&hellip;', 'woocommerce' ) }}</h2>
+                        <div class="product-lift">
+                            {% for post in upsell_products %}
+                                {% include ["woo/partials/tease-product.twig"] %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endblock %}
+        {# Show related products #}
+        {% block related_products %}
+            {% if related_products %}
+            <div class="related-products {{ customizer('article_highlight','highlight_on_single') ? ' has-'~customizer('article_highlight','background_color')~'-background-color' }}">
+                <div class="related-products-container">
+                    <h2>{{ __( 'Related products', 'woocommerce' ) }}</h2>
+                    <div class="product-lift">
+                        {% for post in related_products %}
+                            {% include ["woo/partials/tease-product.twig"] %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endblock %}
+        {% do action('woocommerce_after_single_product') %}
+    {% endblock %} {# End block content footer  #}
+{% endblock %} {# End  block content_area #}

@@ -1,0 +1,94 @@
+{% block before_billing_fields_wrapper %}
+{% endblock %}
+
+<div class="woocommerce-billing-fields">
+    {% block before_billing_fields_title %}
+    {% endblock %}
+
+    {% if fn('wc_ship_to_billing_address_only') and cart.needs_shipping() %}
+
+        {% block billing_fields_shipping_title %}
+            <h3>{{ __('Billing &amp; Shipping', 'woocommerce')|e('esc_html') }}</h3>
+        {% endblock %}
+
+    {% else %}
+
+        {% block billing_fields_billing_title %}
+            <h3>{{ __('Billing details', 'woocommerce')|e('esc_html') }}</h3>
+        {% endblock %}
+
+    {% endif %}
+
+    {% block before_billing_fields_form %}
+        {% do action( 'woocommerce_before_checkout_billing_form', checkout ) %}
+    {% endblock %}
+
+    {% block billing_fields_form %}
+        <div class="woocommerce-billing-fields__field-wrapper">
+            {% for key, field in checkout.get_checkout_fields( 'billing' ) %}
+                {{ fn('woocommerce_form_field', key, field, checkout.get_value(key)) }}
+            {% endfor %}
+        </div>
+    {% endblock %}
+
+    {% block after_billing_fields_form %}
+        {% do action( 'woocommerce_after_checkout_billing_form', checkout ) %}
+    {% endblock %}
+
+</div>
+
+{% block after_billing_fields_wrapper %}
+{% endblock %}
+
+{% if not fn('is_user_logged_in') and checkout.is_registration_enabled() %}
+
+    {% block before_billing_account_fields_wrapper %}
+    {% endblock %}
+
+    <div class="woocommerce-account-fields">
+
+        {% block before_billing_account_fields %}
+        {% endblock %}
+
+        {% if not checkout.is_registration_required() %}
+
+            {% block billing_create_account_checkbox %}
+                <p class="form-row form-row-wide create-account">
+                    <label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
+                        <input class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox"
+                               id="createaccount" {{ fn('checked', create_account_checked, true) }} type="checkbox"
+                               name="createaccount" value="1"/>
+                        <span>{{ __('Create an account?', 'woocommerce')|e('esc_html') }}</span>
+                    </label>
+                </p>
+            {% endblock %}
+
+        {% endif %}
+
+        {% block before_billing_register_form %}
+            {% do action( 'woocommerce_before_checkout_registration_form', checkout ) %}
+        {% endblock %}
+
+        {% if checkout.get_checkout_fields('account') %}
+
+            {% block billing_register_form %}
+                <div class="create-account">
+                    {% for key, field in checkout.get_checkout_fields('account') %}
+                        {{ fn('woocommerce_form_field', key, field, checkout.get_value(key)) }}
+                    {% endfor %}
+                    <div class="clear"></div>
+                </div>
+            {% endblock %}
+
+        {% endif %}
+
+        {% block after_billing_account_fields %}
+            {% do action( 'woocommerce_after_checkout_registration_form', checkout ) %}
+        {% endblock %}
+
+    </div>
+
+    {% block after_billing_account_fields_wrapper %}
+    {% endblock %}
+
+{% endif %}

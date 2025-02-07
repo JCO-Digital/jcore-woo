@@ -112,3 +112,67 @@ function render_template( string $template, array $data = array() ): string {
 	require $final_path;
 	return ob_get_clean();
 }
+
+/**
+ * Set product in single products correctly.
+ *
+ * @param \Timber\Post $post Timber post object.
+ *
+ * @return void
+ */
+function timber_set_product( $post ) {
+	global $product;
+
+	if ( $post->post_type === 'product' ) {
+		$product = wc_get_product( $post->ID );
+	}
+}
+
+/**
+ * Render jcore tease-product in WooCommerce product block.
+ *
+ * @param string $html    The html of the product tease.
+ * @param object $data    Parameters saved in gutenberg.
+ * @param object $product The product object.
+ *
+ * @return string|bool
+ */
+function custom_render_product_block( string $html, object $data, object $product ): string|bool {
+	$context = \Timber::context();
+
+	$context['post']    = \Timber::get_Post( $product->get_id() );
+	$context['product'] = $product;
+	$context['grid']    = $data;
+
+	return \Timber::compile( 'woo/partials/tease-product-gridblock.twig', $context );
+}
+
+/**
+ *  Add custom actions to the order actions
+ *
+ * @param array $actions The available order actions for the order.
+ * @param \WC_Order $order The WooCommerce Order.
+ *
+ * @return array
+ */
+function edit_order_actions( array $actions, \WC_Order $order ): array {
+	if ( $order->has_status( wc_get_is_paid_statuses() ) ) {
+		$actions['view_thankyou'] = __( 'Display thank you page', 'jcore' );
+	}
+
+	return $actions;
+}
+
+/**
+ * Add functionality to resend_order_completed_email action
+ *
+ * @param \WC_Order $order The WooCommerce Order.
+ *
+ * @return void
+ */
+function view_order_thank_you_page( \WC_Order $order ): void {
+	$url = $order->get_checkout_order_received_url();
+	if ( wp_safe_redirect( $url ) ) {
+		exit;
+	}
+}

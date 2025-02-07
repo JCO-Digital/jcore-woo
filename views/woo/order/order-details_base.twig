@@ -1,0 +1,81 @@
+{% block above_order_details_wrapper %}
+{% endblock %}
+
+<section class="woocommerce-order-details">
+
+    {% block above_order_details %}
+        {% do action( 'woocommerce_order_details_before_order_table', order ) %}
+    {% endblock %}
+
+    {% block order_details_title %}
+        <h2 class="woocommerce-order-details__title">{{ __( 'Order details', 'woocommerce' )|e('esc_html') }}</h2>
+    {% endblock %}
+
+
+    <table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
+        {% block order_details_thead %}
+            <thead>
+            <tr>
+                <th class="woocommerce-table__product-name product-name">{{ __('Product', 'woocommerce')|e('esc_html') }}</th>
+                <th class="woocommerce-table__product-table product-total">{{ __('Total', 'woocommerce')|e('esc_html') }}</th>
+            </tr>
+            </thead>
+        {% endblock %}
+
+        {% block order_details_tbody %}
+            <tbody>
+            {% do action( 'woocommerce_order_details_before_order_table_items', order ) %}
+
+            {% for item_id, item in order_items %}
+                {% set product = item.get_product() %}
+                {% include 'woo/order/order-details-item.twig' with {
+                    'order'              : order,
+                    'item_id'            : item_id,
+                    'item'               : item,
+                    'show_purchase_note' : show_purchase_note,
+                    'purchase_note'      : product ? product.get_purchase_note() : '',
+                    'product'            : product,
+                } %}
+            {% endfor %}
+
+            {% do action( 'woocommerce_order_details_after_order_table_items', order ) %}
+            </tbody>
+        {% endblock %}
+
+        {% block order_details_tfoot %}
+            <tfoot>
+            {% for key, total in order.get_order_item_totals() %}
+                <tr>
+                    <th scope="row">{{ total['label']|e('esc_html') }}</th>
+                    <td>{{ ( 'payment_method' == key ) ? total['value']|e('esc_html') : total['value']|e('wp_kses_post') }}</td>
+                </tr>
+            {% endfor %}
+            {% if order.get_customer_note() %}
+                <tr>
+                    <th>{{ __( 'Note:', 'woocommerce' )|e('esc_html') }}</th>
+                    <td>{{ customer_note }}</td>
+                </tr>
+            {% endif %}
+            </tfoot>
+        {% endblock %}
+    </table>
+
+    {% block below_order_details %}
+        {% do action( 'woocommerce_order_details_after_order_table', order ) %}
+    {% endblock %}
+</section>
+
+{% block below_order_details_wrapper %}
+    {# /**
+     * Action hook fired after the order details.
+     *
+     * @since 4.4.0
+     * @param WC_Order $order Order data.
+     */ #}
+    {% do action( 'woocommerce_after_order_details', order ) %}
+{% endblock %}
+
+
+{% if show_customer_details %}
+    {% include 'woo/order/order-details-customer.twig' with {order: order} %}
+{% endif %}

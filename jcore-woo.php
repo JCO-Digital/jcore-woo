@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name: Jcore Woo
+ * Requires Plugins: woocommerce
  * Plugin URI: https://github.com/jco-digital/jcore-woo
  * Description: WooCommerce integration with JCORE
  * Version: 0.1.0
@@ -37,3 +38,6 @@ require_once __DIR__ . '/includes/hooks.php';
 
 // Gutenberg blocks.
 require_once __DIR__ . '/includes/blocks.php';
+
+// WooCommerce integration.
+require_once __DIR__ . '/includes/woocommerce.php';

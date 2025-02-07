@@ -1,0 +1,98 @@
+{% block above_order_wrapper %}
+{% endblock %}
+
+<div class="woocommerce-order">
+    {% block above_order %}
+    {% endblock %}
+
+    {% if order %}
+        {% do action( 'woocommerce_before_thankyou', order.get_id() ) %}
+
+        {% if order.has_status('failed') %}
+            {% block order_failed %}
+                <h1 class="woocommerce-notice woocommerce-notice--error woocommerce-thankyou-order-failed">{{ __('Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again.', 'woocommerce' )|e("esc_html") }}</h1>
+
+                <p class="woocommerce-notice woocommerce-notice--error woocommerce-thankyou-order-failed-actions">
+                    <a href="{{ order.get_checkout_payment_url()|e('esc_url') }}"
+                       class="button pay">{{ __( 'Pay', 'woocommerce' )|e('esc_html') }}</a>
+                    {% if fn('is_user_logged_in') %}
+                        <a href="{{ fn('wc_get_page_permalink','myaccount')|e('esc_url') }}"
+                           class="button pay">{{ __( 'My account', 'woocommerce' )|e('esc_html') }}</a>
+                    {% endif %}
+                </p>
+            {% endblock %}
+        {% else %}
+            {% block order_not_failed %}
+
+                {% include 'woo/checkout/order-received.twig' %}
+
+                {% block above_order_details %}
+                    {% do action( 'jcore_woocommerce_thankyou', order ) %}
+                {% endblock %}
+
+                {% block order_details %}
+                    <ul class="woocommerce-order-overview woocommerce-thankyou-order-details order_details">
+
+                        {% block order_number %}
+                            <li class="woocommerce-order-overview__order order">
+                                {{ __( 'Order number:', 'woocommerce' )|e('esc_html') }}
+                                <strong>{{ order.get_order_number() }}</strong>
+                            </li>
+                        {% endblock %}
+
+                        {% block order_date %}
+                            <li class="woocommerce-order-overview__date date">
+                                {{ __( 'Date:', 'woocommerce' )|e('esc_html') }}
+                                <strong>{{ fn('wc_format_datetime', order.get_date_created()) }}</strong>
+                            </li>
+                        {% endblock %}
+
+                        {% if fn('is_user_logged_in') and order.get_user_id() == fn('get_current_user_id') and order.get_billing_email() %}
+                            {% block order_email %}
+                                <li class="woocommerce-order-overview__email email">
+                                    {{ __( 'Email:', 'woocommerce' )|e('esc_html') }}
+                                    <strong>{{ order.get_billing_email() }}</strong>
+                                </li>
+                            {% endblock %}
+                        {% endif %}
+
+                        {% block order_total %}
+                            <li class="woocommerce-order-overview__total total">
+                                {{ __( 'Total:', 'woocommerce' )|e('esc_html') }}
+                                <strong>{{ order.get_formatted_order_total() }}</strong>
+                            </li>
+                        {% endblock %}
+
+                        {% if order.get_payment_method_title() %}
+                            {% block order_method %}
+                                <li class="woocommerce-order-overview__payment-method method">
+                                    {{ __( 'Payment method:', 'woocommerce' )|e('esc_html') }}
+                                    <strong>{{ order.get_payment_method_title()|e('wp_kses_post') }}</strong>
+                                </li>
+                            {% endblock %}
+                        {% endif %}
+
+                    </ul>
+                {% endblock %}
+            {% endblock %}
+        {% endif %}
+
+        {% do action( 'woocommerce_thankyou_' ~ order.get_payment_method(), order.get_id() ) %}
+        {% do action( 'woocommerce_thankyou', order.get_id() ) %}
+
+        {% block below_order_details %}
+        {% endblock %}
+
+    {% else %}
+
+        {% include 'woo/checkout/order-received.twig' %}
+
+    {% endif %}
+
+    {% block below_order %}
+    {% endblock %}
+
+</div>
+
+{% block below_order_wrapper %}
+{% endblock %}
