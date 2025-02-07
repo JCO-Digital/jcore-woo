@@ -1,4 +1,18 @@
-# 0.1.0 (2025-02-07)
+# [0.2.0](https://github.com/JCO-Digital/jcore-woo/compare/v0.1.0...v0.2.0) (2025-02-07)
+
+
+### Bug Fixes
+
+* Check for vendor/autoload.php. 🐛 ([129e55e](https://github.com/JCO-Digital/jcore-woo/commit/129e55e64dc6eb1c2908243ce6e2b322dab586b3))
+
+
+### Features
+
+* composer update. ([028c765](https://github.com/JCO-Digital/jcore-woo/commit/028c7657a865057e695dcde89c95b403a4ebc39d))
+
+
+
+# [0.1.0](https://github.com/JCO-Digital/jcore-woo/compare/16756b86f9f06c32c28a0544d6a5af2720e80fcc...v0.1.0) (2025-02-07)
 
 
 ### Features
