@@ -1,5 +1,5 @@
 {
-  "name": "jcodigital/jcore-woo",
+  "name": "jcore/woo",
   "description": "WooCommerce integration with JCORE",
   "type": "wordpress-plugin",
   "version": "0.1.0",
