@@ -2,6 +2,7 @@
   "name": "jcore/woo",
   "description": "WooCommerce integration with JCORE",
   "type": "wordpress-plugin",
+  "license": "GPL-2.0-only",
   "version": "0.1.0",
   "autoload": {
     "psr-4": {
