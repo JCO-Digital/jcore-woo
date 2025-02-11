@@ -1,11 +1,11 @@
 {% extends "layout.twig" %}
 {% block content_area %}
     {% block content_above %}
-        <div class="breadcrumb-container">
+        <div class="breadcrumb-container is-layout-constrained">
             {{ yoast_breadcrumbs }}
         </div>
     {% endblock %}
-    <main id="main" class="content-container{% if customizer('article','group_padding') %} group-padding{% endif %}">
+    <main id="main" class="content-container is-layout-constrained">
         {% block content %}
             {#
             * Hook: woocommerce_before_single_product.
@@ -58,7 +58,7 @@
         {% block upsell_products %}
             {% if upsell_products %}
                 <div class="up-sells {{ customizer('article_highlight','highlight_on_single') ? ' has-'~customizer('article_highlight','background_color')~'-background-color' }}">
-                    <div class="up-sells-container">
+                    <div class="up-sells-container is-layout-constrained">
                         <h2>{{ __( 'You may also like&hellip;', 'woocommerce' ) }}</h2>
                         <div class="product-lift">
                             {% for post in upsell_products %}
@@ -73,7 +73,7 @@
         {% block related_products %}
             {% if related_products %}
             <div class="related-products {{ customizer('article_highlight','highlight_on_single') ? ' has-'~customizer('article_highlight','background_color')~'-background-color' }}">
-                <div class="related-products-container">
+                <div class="related-products-container is-layout-constrained">
                     <h2>{{ __( 'Related products', 'woocommerce' ) }}</h2>
                     <div class="product-lift">
                         {% for post in related_products %}
