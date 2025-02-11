@@ -1,3 +1,12 @@
+# [0.3.0](https://github.com/JCO-Digital/jcore-woo/compare/v0.2.0...v0.3.0) (2025-02-11)
+
+
+### Features
+
+* **style:** single template to follow wp container width ([22cee01](https://github.com/JCO-Digital/jcore-woo/commit/22cee0125020b9b59ff79f3aab3ae1c8a831a4f0))
+
+
+
 # [0.2.0](https://github.com/JCO-Digital/jcore-woo/compare/v0.1.0...v0.2.0) (2025-02-07)
 
 
